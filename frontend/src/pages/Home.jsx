@@ -29,7 +29,7 @@ export default function Home(){
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div className="home-page"><Spinner label="Loading stories..." /></div>
+  if (loading) return <div className="home-page"><Spinner label="Loading..." /></div>
 
   const featuredStories = stories.filter((story) => String(story.featured ?? '').trim() === '1')
   const regularStories = stories.filter((story) => String(story.featured ?? '').trim() !== '1')

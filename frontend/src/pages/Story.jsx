@@ -1,20 +1,27 @@
 import React, {useEffect, useState} from 'react'
 import {useParams, Link} from 'react-router-dom'
+import Spinner from '../components/Spinner'
 
 export default function Story(){
   const {id} = useParams()
   const [story,setStory] = useState(null)
   const [chapters,setChapters] = useState([])
+  const [loading,setLoading] = useState(true)
 
   useEffect(()=>{
-    fetch(`/api/stories`).then(r=>r.json()).then(list=>{
-      const s = list.find(x=>String(x.id)===String(id))
-      setStory(s)
+    setLoading(true)
+    Promise.all([
+      fetch(`/api/stories`).then(r=>r.json()),
+      fetch(`/api/stories/${id}/chapters`).then(r=>r.json())
+    ]).then(([list, chaptersList])=>{
+      setStory(list.find(x=>String(x.id)===String(id)))
+      setChapters(Array.isArray(chaptersList) ? chaptersList : [])
     }).catch(console.error)
-    fetch(`/api/stories/${id}/chapters`).then(r=>r.json()).then(setChapters).catch(console.error)
+      .finally(()=>setLoading(false))
   },[id])
 
-  if(!story) return <div className="story-page">Loading...</div>
+  if(loading) return <div className="story-page"><Spinner label="Loading..." /></div>
+  if(!story) return <div className="story-page">Story not found.</div>
 
   return (
     <div className="story-page">

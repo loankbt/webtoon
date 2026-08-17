@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {Link} from 'react-router-dom'
+import Spinner from '../components/Spinner'
 
 const fallbackFeaturedStories = [
   { id: 1, title: 'The Last Empress', authorId: 'Aster', coverUrl: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=800&q=80', featured: '1' },
@@ -15,15 +16,20 @@ const fallbackRegularStories = [
 
 export default function Home(){
   const [stories, setStories] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    setLoading(true)
     fetch('/api/stories')
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data)) setStories(data)
       })
       .catch(() => setStories([]))
+      .finally(() => setLoading(false))
   }, [])
+
+  if (loading) return <div className="home-page"><Spinner label="Loading stories..." /></div>
 
   const featuredStories = stories.filter((story) => String(story.featured ?? '').trim() === '1')
   const regularStories = stories.filter((story) => String(story.featured ?? '').trim() !== '1')

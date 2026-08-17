@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
+import Spinner from '../components/Spinner'
 
 export default function Chapter(){
   const { storyId, chapterId } = useParams()
@@ -8,22 +9,22 @@ export default function Chapter(){
   const [chapters, setChapters] = useState([])
   const [chapterImages, setChapterImages] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [imagesLoading, setImagesLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/stories')
-      .then((r) => r.json())
-      .then((list) => {
-        const selectedStory = list.find((x) => String(x.id) === String(storyId))
-        setStory(selectedStory || null)
-      })
-      .catch(() => setStory(null))
-
-    fetch(`/api/stories/${storyId}/chapters`)
-      .then((r) => r.json())
-      .then((list) => {
-        setChapters(Array.isArray(list) ? list : [])
-      })
-      .catch(() => setChapters([]))
+    setLoading(true)
+    Promise.all([
+      fetch('/api/stories').then((r) => r.json()),
+      fetch(`/api/stories/${storyId}/chapters`).then((r) => r.json())
+    ]).then(([list, chaptersList]) => {
+      const selectedStory = list.find((x) => String(x.id) === String(storyId))
+      setStory(selectedStory || null)
+      setChapters(Array.isArray(chaptersList) ? chaptersList : [])
+    }).catch(() => {
+      setStory(null)
+      setChapters([])
+    }).finally(() => setLoading(false))
   }, [storyId])
 
   useEffect(() => {
@@ -37,13 +38,16 @@ export default function Chapter(){
     const safeIndex = index >= 0 ? index : 0
     setCurrentIndex(safeIndex)
 
+    setImagesLoading(true)
     fetch(`/api/chapter/${chapterId}`)
       .then((r) => r.json())
       .then((images) => setChapterImages(Array.isArray(images) ? images : []))
       .catch(() => setChapterImages([]))
+      .finally(() => setImagesLoading(false))
   }, [chapterId, chapters])
 
-  if (!story) return <div className="story-page">Loading...</div>
+  if (loading) return <div className="story-page"><Spinner label="Loading chapter..." /></div>
+  if (!story) return <div className="story-page">Story not found.</div>
 
   const currentChapter = chapters[currentIndex] || null
   const previousChapter = currentIndex > 0 ? chapters[currentIndex - 1] : null
@@ -91,7 +95,9 @@ export default function Chapter(){
           {currentChapter ? `Chapter ${currentChapter.chapterNumber}: ${currentChapter.title}` : 'Loading chapter...'}
         </div>
 
-        {chapterImages.length ? (
+        {imagesLoading ? (
+          <Spinner label="Loading pages..." />
+        ) : chapterImages.length ? (
           <div className="reader-pages">
             {chapterImages.map((image) => (
               <img

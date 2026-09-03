@@ -2,26 +2,28 @@ import React, {useEffect, useState} from 'react'
 import {useParams, Link} from 'react-router-dom'
 import Spinner from '../components/Spinner'
 
-export default function Story(){
-  const {id} = useParams()
-  const [story,setStory] = useState(null)
-  const [chapters,setChapters] = useState([])
-  const [loading,setLoading] = useState(true)
+export default function Story() {
+  const { id } = useParams()
+  const [story, setStory] = useState(null)
+  const [chapters, setChapters] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  useEffect(()=>{
+  useEffect(() => {
     setLoading(true)
     Promise.all([
-      fetch(`/api/stories`).then(r=>r.json()),
-      fetch(`/api/stories/${id}/chapters`).then(r=>r.json())
-    ]).then(([list, chaptersList])=>{
-      setStory(list.find(x=>String(x.id)===String(id)))
-      setChapters(Array.isArray(chaptersList) ? chaptersList : [])
-    }).catch(console.error)
-      .finally(()=>setLoading(false))
-  },[id])
+      fetch(`/api/stories`).then((r) => r.json()),
+      fetch(`/api/stories/${id}/chapters`).then((r) => r.json())
+    ])
+      .then(([list, chaptersList]) => {
+        setStory(list.find((x) => String(x.id) === String(id)))
+        setChapters(Array.isArray(chaptersList) ? chaptersList : [])
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [id])
 
-  if(loading) return <div className="story-page"><Spinner label="Loading..." /></div>
-  if(!story) return <div className="story-page">Story not found.</div>
+  if (loading) return <div className="story-page"><Spinner label="Loading..." /></div>
+  if (!story) return <div className="story-page">Story not found.</div>
 
   return (
     <div className="story-page">
@@ -54,8 +56,8 @@ export default function Story(){
       <section className="chapter-section">
         <h3>Chapters</h3>
         <ol className="chapter-list">
-          {chapters.map(c => (
-            <Link to={c.id ? `/story/${story.id}/chapter/${c.id}` : '/'} key={c.id}>            
+          {chapters.map((c) => (
+            <Link to={c.id ? `/story/${story.id}/chapter/${c.id}` : '/'} key={c.id}>
               <li key={c.id} className="chapter-item">
                 <span className="chapter-no">Chapter {c.chapterNumber}</span>
                 <span className="chapter-title">{c.title}</span>

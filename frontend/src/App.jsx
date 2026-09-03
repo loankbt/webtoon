@@ -3,6 +3,7 @@ import { Routes, Route, Link } from 'react-router-dom'
 import Home from './pages/Home'
 import Story from './pages/Story'
 import Chapter from './pages/Chapter'
+import logo from './assets/logo.jpg'
 
 export default function App(){
   return (
@@ -10,7 +11,7 @@ export default function App(){
       <header className="topbar">
         <div className="brand-wrap">
           <Link to="/" className="brand" aria-label="Home">
-            <span className="brand-mark">◫</span>
+            <img src={logo} alt="Logo" className="brand-mark" />
           </Link>
         </div>
 

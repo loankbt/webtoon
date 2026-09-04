@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 public class Story {
     private Long id;
+    private String titleId;
     private String title;
     private String description;
     private String authorId;
@@ -17,6 +18,9 @@ public class Story {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public String getTitleId() { return titleId; }
+    public void setTitleId(String titleId) { this.titleId = titleId; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }

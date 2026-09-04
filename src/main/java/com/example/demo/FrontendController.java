@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class FrontendController {
 
-    @GetMapping({"/", "/story/**", "/chapter/**"})
+    @GetMapping({"/", "/stories/**"})
     public String index() {
         return "forward:/index.html";
     }

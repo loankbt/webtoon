@@ -9,11 +9,11 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ChapterImageRepository {
+public class ImageRepository {
 
     private final JdbcTemplate jdbc;
 
-    public ChapterImageRepository(JdbcTemplate jdbc) {
+    public ImageRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
 

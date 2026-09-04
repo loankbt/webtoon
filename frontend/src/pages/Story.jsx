@@ -3,34 +3,28 @@ import {useParams, Link} from 'react-router-dom'
 import Spinner from '../components/Spinner'
 
 export default function Story() {
-  const { id } = useParams()
+  const { title_id } = useParams()
   const [story, setStory] = useState(null)
   const [chapters, setChapters] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     setLoading(true)
-    Promise.all([
-      fetch(`/api/stories`).then((r) => r.json()),
-      fetch(`/api/stories/${id}/chapters`).then((r) => r.json())
-    ])
-      .then(([list, chaptersList]) => {
-        setStory(list.find((x) => String(x.id) === String(id)))
-        setChapters(Array.isArray(chaptersList) ? chaptersList : [])
+      fetch(`/api/stories/${title_id}`)
+      .then((r) => r.json())
+      .then((data) => {
+        setStory(data.story)
+        setChapters(data.chapters)
       })
       .catch(console.error)
       .finally(() => setLoading(false))
-  }, [id])
+  }, [title_id])
 
   if (loading) return <div className="story-page"><Spinner label="Loading..." /></div>
   if (!story) return <div className="story-page">Story not found.</div>
 
   return (
     <div className="story-page">
-      <div className="story-header">
-        <Link to="/" className="story-back">← Back</Link>
-      </div>
-
       <div className="story-content-grid">
         <div className="story-cover-wrap">
           <img
@@ -57,7 +51,7 @@ export default function Story() {
         <h3>Chapters</h3>
         <ol className="chapter-list">
           {chapters.map((c) => (
-            <Link to={c.id ? `/story/${story.id}/chapter/${c.id}` : '/'} key={c.id}>
+            <Link to={c.id ? `/story/${story.titleId}/${c.chapterNumber}` : '/'} key={c.id}>
               <li key={c.id} className="chapter-item">
                 <span className="chapter-no">Chapter {c.chapterNumber}</span>
                 <span className="chapter-title">{c.title}</span>

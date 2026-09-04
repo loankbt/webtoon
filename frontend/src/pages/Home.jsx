@@ -3,17 +3,17 @@ import {Link} from 'react-router-dom'
 import Spinner from '../components/Spinner'
 
 const fallbackFeaturedStories = [
-  { id: 1, title: 'The Last Empress', authorId: 'Aster', coverUrl: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=800&q=80', featured: '1' },
-  { id: 2, title: 'Moonlit Promise', authorId: 'Nami', coverUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80', featured: '1' },
-  { id: 3, title: 'Royal Hearts', authorId: 'Iris', coverUrl: 'https://images.unsplash.com/photo-1521119989659-a83eee488004?auto=format&fit=crop&w=800&q=80', featured: '1' },
-  { id: 7, title: 'Starlit Vows', authorId: 'Eden', coverUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80', featured: '1' },
-  { id: 8, title: 'The Hidden Garden', authorId: 'Noa', coverUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80', featured: '1' }
+  { id: 1, titleId: 'the-last-empress', title: 'The Last Empress', authorId: 'Aster', coverUrl: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=800&q=80', featured: '1' },
+  { id: 2, titleId: 'moonlit-promise', title: 'Moonlit Promise', authorId: 'Nami', coverUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80', featured: '1' },
+  { id: 3, titleId: 'royal-hearts', title: 'Royal Hearts', authorId: 'Iris', coverUrl: 'https://images.unsplash.com/photo-1521119989659-a83eee488004?auto=format&fit=crop&w=800&q=80', featured: '1' },
+  { id: 7, titleId: 'starlit-vows', title: 'Starlit Vows', authorId: 'Eden', coverUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80', featured: '1' },
+  { id: 8, titleId: 'the-hidden-garden', title: 'The Hidden Garden', authorId: 'Noa', coverUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=800&q=80', featured: '1' }
 ]
 
 const fallbackRegularStories = [
-  { id: 4, title: 'Rose of the Mire', authorId: 'Lina', coverUrl: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80', featured: '0' },
-  { id: 5, title: 'Velvet Tide', authorId: 'Sora', coverUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80', featured: '0' },
-  { id: 6, title: 'Winter Bloom', authorId: 'Mira', coverUrl: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=800&q=80', featured: '0' }
+  { id: 4, titleId: 'rose-of-the-mire', title: 'Rose of the Mire', authorId: 'Lina', coverUrl: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80', featured: '0' },
+  { id: 5, titleId: 'velvet-tide', title: 'Velvet Tide', authorId: 'Sora', coverUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80', featured: '0' },
+  { id: 6, titleId: 'winter-bloom', title: 'Winter Bloom', authorId: 'Mira', coverUrl: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=800&q=80', featured: '0' }
 ]
 
 export default function Home(){
@@ -64,7 +64,7 @@ export default function Home(){
     <div className="home-page">
       <section className="hero-grid" aria-label="Featured stories">
         <article className="hero-card featured-slide">
-          <Link to={activeFeaturedStory.id ? `/story/${activeFeaturedStory.id}` : '/'}>
+          <Link to={activeFeaturedStory.titleId ? `/story/${activeFeaturedStory.titleId}` : '/'}>
             <img src={activeFeaturedStory.coverUrl || fallbackFeaturedStories[0].coverUrl} alt={activeFeaturedStory.title || 'Story cover'} className="hero-cover" />
             <div className="hero-story-copy">
               <span className="promo-tag hot">FEATURED</span>
@@ -86,7 +86,7 @@ export default function Home(){
             {featuredSlides.map((story, index) => (
               <button
                 type="button"
-                key={story.id ?? index}
+                key={story.titleId ?? index}
                 className={`featured-dot${index === activeFeaturedIndex ? ' active' : ''}`}
                 onClick={() => setActiveFeaturedIndex(index)}
                 aria-label={`Show featured story ${index + 1}: ${story.title}`}
@@ -104,7 +104,7 @@ export default function Home(){
 
         <div className="release-row">
           {displayRegularStories.map((story, index) => (
-            <Link to={story.id ? `/story/${story.id}` : '/'} key={story.id ?? index} className="release-card">
+            <Link to={story.titleId ? `/story/${story.titleId}` : '/'} key={story.titleId ?? index} className="release-card">
               <img src={story.coverUrl || `https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=800&q=80`} alt={story.title || 'Story cover'} />
               <div className="release-card-copy">
                 <strong>{story.title}</strong>

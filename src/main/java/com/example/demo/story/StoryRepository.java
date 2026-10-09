@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.story;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,7 +47,7 @@ public class StoryRepository {
     public Optional<Story> findByTitleId(String titleId) {
         String sql = "SELECT id, title_id, title, description, author_id, status, created_at, updated_at, featured, cover_url FROM stories WHERE title_id = ? ORDER BY id LIMIT 1";
         try {
-            List<Story> stories = jdbc.query(sql, new Object[]{titleId}, new RowMapper<Story>() {
+            List<Story> stories = jdbc.query(sql, new RowMapper<Story>() {
                 @Override
                 public Story mapRow(ResultSet rs, int rowNum) throws SQLException {
                     Story s = new Story();
@@ -63,7 +63,7 @@ public class StoryRepository {
                     s.setCoverUrl(rs.getString("cover_url"));
                     return s;
                 }
-            });
+            }, titleId);
             return stories.stream().findFirst();
         } catch (DataAccessException ex) {
             return Optional.empty();

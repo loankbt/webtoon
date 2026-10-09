@@ -1,10 +1,13 @@
-package com.example.demo;
+package com.example.demo.story;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+
+import com.example.demo.chapter.ChapterRepository;
+import com.example.demo.chapter.Chapter;
 
 @Service
 public class StoryService {
@@ -25,6 +28,7 @@ public class StoryService {
         Story story = repository.findByTitleId(titleId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Not found title_id: " + titleId));
-        return new StoryWithChapters(story, chapterRepository.findByStoryId(story.getId()));
+        List<Chapter> chapters = chapterRepository.findByStoryId(story.getId());
+        return new StoryWithChapters(story, chapters);
     }
 }

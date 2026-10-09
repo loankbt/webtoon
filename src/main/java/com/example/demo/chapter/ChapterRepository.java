@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.chapter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,7 +21,7 @@ public class ChapterRepository {
 
     public List<Chapter> findByStoryId(Long storyId) {
         String sql = "SELECT id, story_id, chapter_number, title, release_date, created_at, updated_at FROM chapters WHERE story_id = ? ORDER BY chapter_number";
-        return jdbc.query(sql, new Object[]{storyId}, new RowMapper<Chapter>(){
+        return jdbc.query(sql, new RowMapper<Chapter>(){
             @Override
             public Chapter mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Chapter c = new Chapter();
@@ -34,7 +34,7 @@ public class ChapterRepository {
                 c.setUpdatedAt(rs.getTimestamp("updated_at"));
                 return c;
             }
-        });
+        }, storyId);
     }
 
     public Optional<Chapter> findChapterByTitleIdAndChapterNumber(String titleId, String chapterNumber) {
@@ -44,7 +44,7 @@ public class ChapterRepository {
                     "WHERE s.title_id = ? AND c.chapter_number = ? " +
                     "ORDER BY c.chapter_number LIMIT 1";
         try {
-            return Optional.of(jdbc.queryForObject(sql, new Object[]{titleId, chapterNumber}, new RowMapper<Chapter>() {
+            return Optional.of(jdbc.queryForObject(sql, new RowMapper<Chapter>() {
             @Override
             public Chapter mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Chapter c = new Chapter();
@@ -57,8 +57,7 @@ public class ChapterRepository {
                 c.setUpdatedAt(rs.getTimestamp("updated_at"));
                 return c;
             }
-        }
-        ));
+        }, titleId, chapterNumber));
         } catch (DataAccessException ex) {
             return Optional.empty();
         }

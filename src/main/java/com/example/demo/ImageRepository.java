@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.chapter.ChapterImage;
+
 @Repository
 public class ImageRepository {
 
@@ -19,7 +21,7 @@ public class ImageRepository {
 
     public List<ChapterImage> findByChapterId(Long chapterId) {
         String sql = "SELECT id, chapter_id, page_number, file_path, caption, created_at, updated_at FROM images WHERE chapter_id = ? ORDER BY page_number";
-        return jdbc.query(sql, new Object[]{chapterId}, new RowMapper<ChapterImage>() {
+        return jdbc.query(sql, new RowMapper<ChapterImage>() {
             @Override
             public ChapterImage mapRow(ResultSet rs, int rowNum) throws SQLException {
                 ChapterImage image = new ChapterImage();
@@ -32,6 +34,6 @@ public class ImageRepository {
                 image.setUpdatedAt(rs.getTimestamp("updated_at"));
                 return image;
             }
-        });
+        }, chapterId);
     }
 }
